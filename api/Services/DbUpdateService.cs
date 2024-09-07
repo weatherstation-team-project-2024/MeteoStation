@@ -19,7 +19,7 @@ namespace api.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
-        private int _frequency;
+        private int _frequency; 
 
         public Worker(
             ILogger<Worker> logger,
@@ -86,7 +86,7 @@ namespace api.Services
                             PropertyNameCaseInsensitive = true
                         };
 
-                        var weatherData = JsonSerializer.Deserialize<WeatherDataResponse>(content, options);
+                        var weatherData = JsonSerializer.Deserialize<WeatherStations>(content, options);
 
                         if (weatherData == null || weatherData.Stations == null)
                         {

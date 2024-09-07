@@ -28,7 +28,7 @@ namespace api.Controllers
                 DateTimeOffset dateTimeOffset = DateTimeOffset.Now;
                 long unixTimestamp = dateTimeOffset.ToUnixTimeSeconds();
 
-                return Ok(new WeatherDataResponse { Stations = updatedStations, GeneratedAt = unixTimestamp });
+                return Ok(new WeatherStations { Stations = updatedStations, GeneratedAt = unixTimestamp });
             }
             catch (Exception ex)
             {
@@ -72,7 +72,7 @@ namespace api.Controllers
                 DateTimeOffset dateTimeOffset = DateTimeOffset.Now;
                 long unixTimestamp = dateTimeOffset.ToUnixTimeSeconds();
 
-                return Ok(new WeatherDataResponse { Stations = stations, GeneratedAt = unixTimestamp });
+                return Ok(new WeatherStations { Stations = stations, GeneratedAt = unixTimestamp });
             }
             catch (Exception ex)
             {

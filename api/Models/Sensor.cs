@@ -6,7 +6,7 @@ namespace api.Models
     public class Sensor
     {
         [Key]
-        public long Lsid { get; set; } 
+        public int Lsid { get; set; } 
 
         public int? SensorType { get; set; } 
 
@@ -52,8 +52,6 @@ namespace api.Models
         //Foreign key property 
         public int StationId { get; set; }
         public Station Station { get; set; }
-
-        [JsonIgnore]
         public ICollection<WeatherData>? WeatherData { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Data;
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240907162353_V6")]
+    partial class V6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,9 +199,6 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "gateway_type");
 
-                    b.Property<long?>("GeneratedAt")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision")
                         .HasAnnotation("Relational:JsonPropertyName", "latitude");
@@ -259,14 +259,22 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "username");
 
-                    b.HasKey("StationId");
+                    b.Property<long>("WeatherStationGeneratedAt")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("GeneratedAt");
+                    b.Property<int>("WeatherStationsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("StationId");
 
                     b.HasIndex("StationIdUuid")
                         .IsUnique();
 
+                    b.HasIndex("WeatherStationGeneratedAt");
+
                     b.ToTable("Stations");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "stations");
                 });
 
             modelBuilder.Entity("api.Models.WeatherData", b =>
@@ -681,7 +689,9 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.WeatherStations", "WeatherStation")
                         .WithMany("Stations")
-                        .HasForeignKey("GeneratedAt");
+                        .HasForeignKey("WeatherStationGeneratedAt")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("WeatherStation");
                 });
