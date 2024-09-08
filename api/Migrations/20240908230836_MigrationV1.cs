@@ -13,6 +13,38 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Sensors",
+                columns: table => new
+                {
+                    Lsid = table.Column<int>(type: "integer", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SensorType = table.Column<int>(type: "integer", nullable: true),
+                    Category = table.Column<string>(type: "text", nullable: true),
+                    Manufacturer = table.Column<string>(type: "text", nullable: true),
+                    ProductName = table.Column<string>(type: "text", nullable: true),
+                    ProductNumber = table.Column<string>(type: "text", nullable: true),
+                    RainCollectorType = table.Column<int>(type: "integer", nullable: true),
+                    Active = table.Column<bool>(type: "boolean", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StationId = table.Column<int>(type: "integer", nullable: false),
+                    StationIdUuid = table.Column<string>(type: "text", nullable: true),
+                    StationName = table.Column<string>(type: "text", nullable: true),
+                    ParentDeviceType = table.Column<string>(type: "text", nullable: true),
+                    ParentDeviceName = table.Column<string>(type: "text", nullable: true),
+                    ParentDeviceId = table.Column<long>(type: "bigint", nullable: true),
+                    ParentDeviceIdHex = table.Column<string>(type: "text", nullable: true),
+                    PortNumber = table.Column<int>(type: "integer", nullable: true),
+                    Latitude = table.Column<double>(type: "double precision", nullable: true),
+                    Longitude = table.Column<double>(type: "double precision", nullable: true),
+                    Elevation = table.Column<double>(type: "double precision", nullable: true),
+                    TxId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sensors", x => new { x.Lsid, x.ModifiedDate });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Stations",
                 columns: table => new
                 {
@@ -58,6 +90,9 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Sensors");
+
             migrationBuilder.DropTable(
                 name: "Stations");
         }
