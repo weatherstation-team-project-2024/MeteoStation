@@ -12,14 +12,12 @@ namespace api.Data
 
         // Add DbSet properties for your entities here
         public DbSet<Station> Stations { get; set; }
-        // public DbSet<WeatherStations> WeatherStations { get; set; }
-        // public DbSet<Node> Nodes { get; set; }
-        // public DbSet<Sensor> Sensors { get; set; }
-        // public DbSet<WeatherData> WeatherData { get; set; } 
+        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<WeatherData> Weather { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Station>()
                 .HasKey(s => s.StationId);
@@ -27,6 +25,16 @@ namespace api.Data
             modelBuilder.Entity<Station>()
                 .HasIndex(s => s.StationIdUuid)
                 .IsUnique();
+
+            // modelBuilder.Entity<Sensor>().HasNoKey();
+
+            modelBuilder.Entity<Sensor>()
+                .Property(s => s.ModifiedDate)
+                .HasColumnType("timestamp with time zone");
+
+            modelBuilder.Entity<Sensor>()
+                .Property(s => s.CreatedDate)
+                .HasColumnType("timestamp with time zone");
 
             // modelBuilder.Entity<Station>()
             //     .HasMany(s => s.Sensors)

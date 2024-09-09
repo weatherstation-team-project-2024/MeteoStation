@@ -22,6 +22,101 @@ namespace api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("api.Models.Sensor", b =>
+                {
+                    b.Property<int>("Lsid")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "lsid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "modified_date");
+
+                    b.Property<bool?>("Active")
+                        .HasColumnType("boolean")
+                        .HasAnnotation("Relational:JsonPropertyName", "active");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "category");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "created_date");
+
+                    b.Property<double?>("Elevation")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "elevation");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "latitude");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "longitude");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "manufacturer");
+
+                    b.Property<long?>("ParentDeviceId")
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_device_id");
+
+                    b.Property<string>("ParentDeviceIdHex")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_device_id_hex");
+
+                    b.Property<string>("ParentDeviceName")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_device_name");
+
+                    b.Property<string>("ParentDeviceType")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_device_type");
+
+                    b.Property<int?>("PortNumber")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "port_number");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "product_name");
+
+                    b.Property<string>("ProductNumber")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "product_number");
+
+                    b.Property<int?>("RainCollectorType")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "rain_collector_type");
+
+                    b.Property<int?>("SensorType")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "sensor_type");
+
+                    b.Property<int>("StationId")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_id");
+
+                    b.Property<string>("StationIdUuid")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_id_uuid");
+
+                    b.Property<string>("StationName")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_name");
+
+                    b.Property<int?>("TxId")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "tx_id");
+
+                    b.HasKey("Lsid", "ModifiedDate");
+
+                    b.ToTable("Sensors");
+                });
+
             modelBuilder.Entity("api.Models.Station", b =>
                 {
                     b.Property<int>("StationId")
@@ -133,6 +228,33 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("Stations");
+                });
+
+            modelBuilder.Entity("api.Models.WeatherData", b =>
+                {
+                    b.Property<int>("Lsid")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "lsid");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "ts");
+
+                    b.Property<double?>("Humidity")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "hum");
+
+                    b.Property<double?>("Pm2p5")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "pm_2p5");
+
+                    b.Property<double?>("Temperature")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "temp");
+
+                    b.HasKey("Lsid", "Time");
+
+                    b.ToTable("Weather");
                 });
 #pragma warning restore 612, 618
         }
