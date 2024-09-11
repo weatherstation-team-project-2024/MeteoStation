@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+
+using api.Models.ResponseModels;
 using api.Models;
 using api.Data;
+
 
 namespace api.Services
 {
@@ -49,6 +52,7 @@ namespace api.Services
             }
 
             await FetchStations();
+            await FetchNodes();
             await FetchSensors();
             await FetchWeatherData();
 
@@ -128,6 +132,79 @@ namespace api.Services
                             else
                             {
                                 _context.Entry(existingStation).CurrentValues.SetValues(station);
+                            }
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        _logger.LogWarning("API request failed with status code: {StatusCode}", response.StatusCode);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the request");
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private async Task FetchNodes()
+        {
+            try
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var _context = scope.ServiceProvider.GetRequiredService<DataContext>();
+
+                    var client = _httpClientFactory.CreateClient();
+                    var apiKey = _configuration["WeatherLinkApi:ApiKey"];
+                    var apiSecret = _configuration["WeatherLinkApi:ApiSecret"];
+                    var baseUrl = _configuration["WeatherLinkApi:BaseUrl"];
+
+                    if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret) || string.IsNullOrEmpty(baseUrl))
+                    {
+                        _logger.LogError("API configuration is missing or incomplete.");
+
+                        return;
+                    }
+
+                    var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/nodes?api-key={apiKey}");
+                    request.Headers.Add("x-api-secret", apiSecret);
+
+                    var response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        _logger.LogInformation("API Response: {Content}", content);
+
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+
+                        var nodesData = JsonSerializer.Deserialize<NodeResponse>(content, options);
+
+                        if (nodesData == null || nodesData.Nodes == null)
+                        {
+                            _logger.LogWarning("Deserialized nodes data is null.");
+                            return;
+                        }
+
+                        foreach (var node in nodesData.Nodes)
+                        {
+                            var existingNode = await _context.Nodes.FirstOrDefaultAsync(n => n.NodeId == node.NodeId);
+
+                            if (existingNode == null)
+                            {
+                                _context.Nodes.Add(node);
+                            }
+                            else
+                            {
+                                _context.Entry(existingNode).CurrentValues.SetValues(node);
                             }
                         }
 

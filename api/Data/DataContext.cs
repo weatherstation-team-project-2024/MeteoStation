@@ -12,6 +12,7 @@ namespace api.Data
 
         // Add DbSet properties for your entities here
         public DbSet<Station> Stations { get; set; }
+        public DbSet<Node> Nodes { get; set; }
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<WeatherData> Weather { get; set; }
 

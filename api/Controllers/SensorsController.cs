@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using api.Models;
+using api.Models.ResponseModels;
 
 namespace api.Controllers
 {
