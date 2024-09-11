@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using api.Models.Converters;
 
-namespace api.Models
+namespace api.Models.ResponseModels
 {
     public class SensorDataResponse
     {

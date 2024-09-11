@@ -22,6 +22,69 @@ namespace api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("api.Models.Node", b =>
+                {
+                    b.Property<int>("NodeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "node_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NodeId"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasAnnotation("Relational:JsonPropertyName", "active");
+
+                    b.Property<int>("DeviceId")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "device_id");
+
+                    b.Property<string>("DeviceIdHex")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "device_id_hex");
+
+                    b.Property<double>("Elevation")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "elevation");
+
+                    b.Property<int>("FirmwareVersion")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "firmware_version");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "latitude");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasAnnotation("Relational:JsonPropertyName", "longitude");
+
+                    b.Property<string>("NodeName")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "node_name");
+
+                    b.Property<long>("RegisteredDate")
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Relational:JsonPropertyName", "registered_date");
+
+                    b.Property<int>("StationId")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_id");
+
+                    b.Property<string>("StationIdUuidString")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_id_uuid");
+
+                    b.Property<string>("StationName")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "station_name");
+
+                    b.HasKey("NodeId");
+
+                    b.ToTable("Nodes");
+                });
+
             modelBuilder.Entity("api.Models.Sensor", b =>
                 {
                     b.Property<int>("Lsid")
