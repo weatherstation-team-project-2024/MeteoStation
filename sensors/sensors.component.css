@@ -1,0 +1,14 @@
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table.dataTable {
+    width: 100% !important;
+  }
+  
+  @media screen and (max-width: 767px) {
+    .table-responsive {
+      border: none;
+    }
+  }
