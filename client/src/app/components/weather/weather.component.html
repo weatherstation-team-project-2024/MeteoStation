@@ -1,14 +1,36 @@
-<!-- <div style="display: flex; justify-content: center;">
-    <jqxChart #myChart
-    [width]="getWidth()" [height]="500"
-    [title]="'Fitness & exercise weekly scorecard'"
-    [description]="'Time spent in vigorous exercise by activity'"
-    [showLegend]="true" [enableAnimations]="true" [padding]="padding"
-    [titlePadding]="titlePadding" [source]="sampleData" [xAxis]="xAxis"
-    [valueAxis]="valueAxis" [seriesGroups]="seriesGroups" [colorScheme]="'scheme05'">
-</jqxChart>
-</div> -->
-
-<div>
-	<canvasjs-chart [options]="chartOptions"></canvasjs-chart>
-</div>
+<div class="weather-container">
+    <div class="time-selector">
+      <div class="time-period-selector">
+        <label for="timePeriod">Select Time Period:</label>
+        <select id="timePeriod" [(ngModel)]="timePeriod" (change)="onTimePeriodChange()">
+          <option value="1d">Last 24 Hours</option>
+          <option value="7d">Last 7 Days</option>
+          <option value="30d">Last 30 Days</option>
+          <option value="1y">Last Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+      </div>
+  
+      <div class="custom-date-selector">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateChange()">
+        
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateChange()">
+      </div>
+    </div>
+  
+    <div class="chart-container">
+      <canvasjs-chart *ngIf="chartOptions" [options]="chartOptions"></canvasjs-chart>
+    </div>
+  
+    <div class="average-values">
+      <h3>Average Values</h3>
+      <p>Temperature: {{ averageTemp }}°F</p>
+      <p>Humidity: {{ averageHum }}%</p>
+    </div>
+  
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+  </div>
