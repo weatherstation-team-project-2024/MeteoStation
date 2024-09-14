@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { StationsComponent } from './components/stations/stations.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  schemas: [],
+  imports: [RouterOutlet, StationsComponent], 
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
