@@ -28,16 +28,27 @@ import { DataStoreService } from '../../services/datastore.service.ts.service';
   ],
   template: `
     <div class="weather-container">
+    <mat-card *ngIf="error" class="error-message">
+        <mat-card-content>
+          {{ error }}
+        </mat-card-content>
+      </mat-card>
+
       <mat-card class="time-selector">
         <mat-card-content>
+        <mat-form-field>
+            <mat-label>Days</mat-label>
+            <input matInput type="number" [(ngModel)]="timeInput.days" min="0">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Hours</mat-label>
+            <input matInput type="number" [(ngModel)]="timeInput.hours" min="0">
+          </mat-form-field>
           <mat-form-field>
             <mat-label>Minutes</mat-label>
             <input matInput type="number" [(ngModel)]="timeInput.minutes" min="0">
           </mat-form-field>
-          <mat-form-field>
-            <mat-label>Days</mat-label>
-            <input matInput type="number" [(ngModel)]="timeInput.days" min="0">
-          </mat-form-field>
+         
           <mat-form-field>
             <mat-label>Months</mat-label>
             <input matInput type="number" [(ngModel)]="timeInput.months" min="0">
@@ -46,27 +57,31 @@ import { DataStoreService } from '../../services/datastore.service.ts.service';
             <mat-label>Years</mat-label>
             <input matInput type="number" [(ngModel)]="timeInput.years" min="0">
           </mat-form-field>
-          <button mat-raised-button color="primary" (click)="applyTimeSelection()">Apply</button>
+          <div class="button-container">
+            <button mat-raised-button color="primary" (click)="applyTimeSelection()" class="apply-button">Apply</button>
+          </div>
         </mat-card-content>
       </mat-card>
+
+      <style>
+        .button-container {
+          display: flex;
+          justify-content: center;
+        }
+      </style>
 
       <mat-card class="average-values">
         <mat-card-content>
           <h2>Average Values</h2>
           <p>Temperature: {{ averageTemp }}°F</p>
           <p>Humidity: {{ averageHum }}%</p>
+          <p>PM 2.5: {{ averagePm2p5 }}μg/m³</p>
         </mat-card-content>
       </mat-card>
 
       <div class="chart-container">
         <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '400px'}"></canvasjs-chart>
       </div>
-
-      <mat-card *ngIf="error" class="error-message">
-        <mat-card-content>
-          {{ error }}
-        </mat-card-content>
-      </mat-card>
     </div>
   `,
   styles: [`
@@ -100,7 +115,9 @@ export class WeatherComponent implements OnInit, OnDestroy {
   error: string | null = null;
   averageTemp: number = 0;
   averageHum: number = 0;
+  averagePm2p5: number = 0;
   timeInput = {
+    hours: 0,
     minutes: 0,
     days: 7,
     months: 0,
@@ -136,6 +153,7 @@ export class WeatherComponent implements OnInit, OnDestroy {
   applyTimeSelection(): void {
     const now = new Date();
     const pastDate = new Date(now.getTime());
+    pastDate.setHours(pastDate.getHours() - this.timeInput.hours);
     pastDate.setMinutes(pastDate.getMinutes() - this.timeInput.minutes);
     pastDate.setDate(pastDate.getDate() - this.timeInput.days);
     pastDate.setMonth(pastDate.getMonth() - this.timeInput.months);
@@ -146,7 +164,11 @@ export class WeatherComponent implements OnInit, OnDestroy {
 
     this.filteredWeather = this.weather
       .sort((a, b) => b.ts - a.ts)
-      .filter(item => item.ts >= startTime && item.ts <= endTime);
+      .filter(item => item.ts >= startTime && item.ts <= endTime && item.pm_2p5 !== undefined);
+
+    if (this.filteredWeather.length > 0) {
+      this.error = null;
+    }
 
     this.calculateAverages();
     this.processData();
@@ -156,18 +178,21 @@ export class WeatherComponent implements OnInit, OnDestroy {
     if (this.filteredWeather.length === 0) {
       this.averageTemp = 0;
       this.averageHum = 0;
+      this.averagePm2p5 = 0;
       return;
     }
 
     const sum = this.filteredWeather.reduce((acc, item) => {
       return {
         temp: acc.temp + (item.temp ?? 0),
-        hum: acc.hum + (item.hum ?? 0)
+        hum: acc.hum + (item.hum ?? 0),
+        pm_2p5: acc.pm_2p5 + (item.pm_2p5 ?? 0)
       };
-    }, { temp: 0, hum: 0 });
+    }, { temp: 0, hum: 0, pm_2p5: 0 });
 
     this.averageTemp = +(sum.temp / this.filteredWeather.length).toFixed(2);
     this.averageHum = +(sum.hum / this.filteredWeather.length).toFixed(2);
+    this.averagePm2p5 = +(sum.pm_2p5 / this.filteredWeather.length).toFixed(2);
   }
 
   processData(): void {
@@ -187,11 +212,16 @@ export class WeatherComponent implements OnInit, OnDestroy {
       y: item.hum
     }));
 
+    const pm2p5Data = this.filteredWeather.map(item => ({
+      x: new Date(item.ts * 1000),
+      y: item.pm_2p5
+    }));
+
     this.chartOptions = {
       animationEnabled: true,
       theme: "light2",
       title: {
-        text: "Temperature and Humidity"
+        text: "Temperature, Humidity, and PM 2.5"
       },
       axisX: {
         title: "Time",
@@ -202,6 +232,10 @@ export class WeatherComponent implements OnInit, OnDestroy {
       },
       axisY2: {
         title: "Humidity (%)",
+        includeZero: false
+      },
+      axisY3: {
+        title: "PM 2.5 (μg/m³)",
         includeZero: false
       },
       toolTip: {
@@ -229,7 +263,15 @@ export class WeatherComponent implements OnInit, OnDestroy {
         axisYType: "secondary",
         showInLegend: true,
         dataPoints: humidityData
+      }, {
+        type: "line",
+        name: "PM 2.5",
+        axisYType: "tertiary",
+        showInLegend: true,
+        dataPoints: pm2p5Data
       }]
     };
   }
 }
+
+

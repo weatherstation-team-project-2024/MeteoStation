@@ -67,10 +67,47 @@ namespace api.Services
                 {
                     var _context = scope.ServiceProvider.GetRequiredService<DataContext>();
                     _context.Database.Migrate();
-                    
-                    await _context.Database.ExecuteSqlRawAsync("SELECT create_hypertable('\"Sensors\"', 'ModifiedDate');");
-                    await _context.Database.ExecuteSqlRawAsync("SELECT create_hypertable('\"Weather\"', 'Time');");
+
+                    var connection = _context.Database.GetDbConnection();
+                    await connection.OpenAsync();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT EXISTS (SELECT 1 FROM timescaledb_information.hypertables WHERE hypertable_schema = 'public' AND hypertable_name = 'Sensors');";
+                        #pragma warning disable CS8605 
+                        var isSensorsHypertable = (bool)await command.ExecuteScalarAsync();
+                        #pragma warning restore CS8605 
+
+                        if (!isSensorsHypertable)
+                        {
+                            Console.WriteLine("Creating hypertable 'Sensors'...");
+                            await _context.Database.ExecuteSqlRawAsync("SELECT create_hypertable('\"Sensors\"', 'ModifiedDate');");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Hypertable 'Sensors' already exists.");
+                        }
+                    }
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT EXISTS (SELECT 1 FROM timescaledb_information.hypertables WHERE hypertable_schema = 'public' AND hypertable_name = 'Weather');";
+                        #pragma warning disable CS8605 
+                        var isWeatherHypertable = (bool)await command.ExecuteScalarAsync();
+                        #pragma warning restore CS8605 
+
+                        if (!isWeatherHypertable)
+                        {
+                            Console.WriteLine("Creating hypertable 'Weather'...");
+                            await _context.Database.ExecuteSqlRawAsync("SELECT create_hypertable('\"Weather\"', 'Time');");
+                        }
+                        else{
+                            Console.WriteLine("Hypertable 'Weather' already exists.");
+                        }
+                    }
                 }
+
+
             }
             catch (Exception ex)
             {
