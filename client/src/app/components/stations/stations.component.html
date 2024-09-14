@@ -1,0 +1,114 @@
+<style>
+   table.dataTable thead tr > .dtfc-fixed-left,
+  table.dataTable thead tr > .dtfc-fixed-right,
+  table.dataTable tfoot tr > .dtfc-fixed-left,
+  table.dataTable tfoot tr > .dtfc-fixed-right {
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    background-color: white;
+  }
+  
+  table.dataTable tbody tr > .dtfc-fixed-left,
+  table.dataTable tbody tr > .dtfc-fixed-right {
+    z-index: 1;
+    background-color: white;
+  }
+  
+  div.dtfc-left-top-blocker,
+  div.dtfc-right-top-blocker {
+    background-color: white;
+  }
+</style>
+
+<style>
+
+  table {
+      border-collapse: collapse;
+      width: 100%;
+  }
+  
+  th {
+      font-size: 16px; 
+  }
+  td {
+      font-size: 12px;
+  }
+  
+  th, td {
+      text-align: left;
+      padding: 5px;
+      border-bottom: 1px solid #dff6f7;
+      font-family: sans-serif;
+  }
+  
+  th {
+      background-color: #11b3c2;
+      color: white;
+  }
+  
+  tr:nth-child(even) {
+      background-color: #dff6f7
+  }
+  tr:hover{
+      background-color:#b9e9eb;
+  }
+  </style>
+
+<div class="table-responsive">
+  <table datatable [dtOptions]="dtOptions" class="table table-bordered table-striped row-border hover" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Product Number</th>
+        <th>Gateway ID</th>
+        <th>Gateway ID (hex)</th>
+        <th>User Email</th>
+        <th>Company Name</th>
+        <th>Active</th>
+        <th>Private</th>
+        <th>Recording Interval</th>
+        <th>Firmware Version</th>
+        <th>Registered Date</th>
+        <th>Time Zone</th>
+        <th>City</th>
+        <th>Region</th>
+        <th>Country</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Elevation</th>
+        <th>Gateway Type</th>
+        <th>Relationship Type</th>
+        <th>Subscription Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let station of stations">
+        <td>{{station.station_id || 'NULL'}}</td>
+        <td>{{station.station_name || 'NULL'}}</td>
+        <td>{{station.product_number || 'NULL'}}</td>
+        <td>{{station.gateway_id || 'NULL'}}</td>
+        <td>{{station.gateway_id_hex || 'NULL'}}</td>
+        <td>{{station.user_email || 'NULL'}}</td>
+        <td>{{station.company_name || 'NULL'}}</td>
+        <td>{{station.active ? 'Yes' : 'NULL'}}</td>
+        <td>{{station.private ? 'Yes' : 'NULL'}}</td>
+        <td>{{station.recording_interval || 'NULL'}}</td>
+        <td>{{station.firmware_version || 'NULL'}}</td>
+        <td>{{station.registered_date ? (station.registered_date | date:'dd/MM/yyyy HH:mm:ss') : 'NULL'}}</td>
+        <td>{{station.time_zone || 'NULL'}}</td>
+        <td>{{station.city || 'NULL'}}</td>
+        <td>{{station.region || 'NULL'}}</td>
+        <td>{{station.country || 'NULL'}}</td>
+        <td>{{station.latitude || 'NULL'}}</td>
+        <td>{{station.longitude || 'NULL'}}</td>
+        <td>{{station.elevation || 'NULL'}}</td>
+        <td>{{station.gateway_type || 'NULL'}}</td>
+        <td>{{station.relationship_type || 'NULL'}}</td>
+        <td>{{station.subscription_type || 'NULL'}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
