@@ -1,1 +1,33 @@
-<p>sidebar works!</p>
+<div class="sidebar">
+  <div class="meteo-icon">
+    <span>MeteoStation</span>
+  </div>
+  <nav>
+    <ul>
+      <li>
+        <a routerLink="/weather" routerLinkActive="active">
+          <i class="material-icons">cloud</i>
+          <span>Weather</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/stations" routerLinkActive="active">
+          <i class="material-icons">location_on</i>
+          <span>Stations</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/nodes" routerLinkActive="active">
+          <i class="material-icons">device_hub</i>
+          <span>Nodes</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/sensors" routerLinkActive="active">
+          <i class="material-icons">sensors</i>
+          <span>Sensors</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
