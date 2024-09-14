@@ -3,13 +3,12 @@ import { Component } from '@angular/core';
 
 import { StationsComponent } from './components/stations/stations.component';
 import { DataStoreService } from './services/datastore.service.ts.service';
-import { DataTablesModule } from 'angular-datatables';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   schemas: [],
-  imports: [RouterOutlet, StationsComponent, DataTablesModule], 
+  imports: [RouterOutlet, StationsComponent], 
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -19,7 +18,6 @@ export class AppComponent {
   constructor(private dataStore: DataStoreService) {}
 
   ngOnInit() {
-    // Initialize all data
     this.dataStore.fetchSensors();
     this.dataStore.fetchWeather();
     this.dataStore.fetchStations();
